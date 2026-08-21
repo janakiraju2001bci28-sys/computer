@@ -1,0 +1,42 @@
+#include <stdbool.h>
+#include <string.h>
+#include <stdlib.h>
+
+bool wordBreak(char* s, char** wordDict, int wordDictSize) {
+    int len = strlen(s);
+    
+    // Allocate DP array initialized to false
+    bool* dp = (bool*)calloc(len + 1, sizeof(bool));
+    
+    // Base case: an empty string prefix can always be segmented
+    dp[0] = true;
+
+    // Iterate through all possible sub-segment lengths of string s
+    for (int i = 1; i <= len; i++) {
+        for (int j = 0; j < i; j++) {
+            // If the prefix up to index j is valid, check if the remaining 
+            // substring s[j...i-1] matches any word in the dictionary
+            if (dp[j]) {
+                int subLen = i - j;
+                
+                // Compare substring s[j...i-1] against dictionary words
+                for (int k = 0; k < wordDictSize; k++) {
+                    if ((int)strlen(wordDict[k]) == subLen && 
+                        strncmp(s + j, wordDict[k], subLen) == 0) {
+                        dp[i] = true;
+                        break; // Found a match, move to the next 'i'
+                    }
+                }
+                
+                // Optimization: if dp[i] is already true, no need to check other 'j's
+                if (dp[i]) {
+                    break;
+                }
+            }
+        }
+    }
+
+    bool result = dp[len];
+    free(dp); // Clean up allocated memory
+    return result;
+}
