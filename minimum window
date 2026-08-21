@@ -1,0 +1,67 @@
+#include <string.h>
+#include <limits.h>
+
+char* minWindow(char* s, char* t) {
+    int s_len = strlen(s);
+    int t_len = strlen(t);
+
+    if (s_len < t_len || t_len == 0) return "";
+
+    // Frequency maps for characters (ASCII size 128)
+    int mapT[128] = {0};
+    int mapW[128] = {0};
+
+    // Populate the required character counts from t
+    for (int i = 0; i < t_len; i++) {
+        mapT[(unsigned char)t[i]]++;
+    }
+
+    int required = 0;
+    for (int i = 0; i < 128; i++) {
+        if (mapT[i] > 0) required++;
+    }
+
+    int left = 0, right = 0;
+    int formed = 0; // Number of unique characters meeting the criteria in current window
+
+    int min_len = INT_MAX;
+    int min_left = 0;
+
+    while (right < s_len) {
+        char c = s[right];
+        mapW[(unsigned char)c]++;
+
+        // If the frequency of the current character matches its desired count in t
+        if (mapT[(unsigned char)c] > 0 && mapW[(unsigned char)c] == mapT[(unsigned char)c]) {
+            formed++;
+        }
+
+        // Try to contract the window from the left
+        while (left <= right && formed == required) {
+            c = s[left];
+
+            // Update the minimum window parameters
+            if (right - left + 1 < min_len) {
+                min_len = right - left + 1;
+                min_left = left;
+            }
+
+            // Remove the character from the left side of the window
+            mapW[(unsigned char)c]--;
+            if (mapT[(unsigned char)c] > 0 && mapW[(unsigned char)c] < mapT[(unsigned char)c]) {
+                formed--;
+            }
+
+            left++;
+        }
+
+        right++;
+    }
+
+    // If no valid window was found, return empty string
+    if (min_len == INT_MAX) return "";
+
+    // Null-terminate the string at the end of the minimum window
+    s[min_left + min_len] = '\0';
+    return &s[min_left];
+}
