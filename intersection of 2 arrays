@@ -1,0 +1,40 @@
+#include <stdlib.h>
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* intersection(int* nums1, int nums1Size, int* nums2, int nums2Size, int* returnSize) {
+    // Array to track if a number exists in nums1 (values up to 1000)
+    int lookup[1001] = {0};
+    
+    // Mark numbers present in nums1
+    for (int i = 0; i < nums1Size; i++) {
+        lookup[nums1[i]] = 1;
+    }
+    
+    // Allocate max potential size for the result
+    int maxResultSize = nums1Size < nums2Size ? nums1Size : nums2Size;
+    int* result = (int*)malloc(maxResultSize * sizeof(int));
+    int count = 0;
+    
+    // Check nums2 against the lookup tracker
+    for (int i = 0; i < nums2Size; i++) {
+        if (lookup[nums2[i]] == 1) {
+            result[count++] = nums2[i];
+            lookup[nums2[i]] = 0; // Mark 0 to handle duplicates in nums2
+        }
+    }
+    
+    *returnSize = count;
+    return result;
+}
+o/p:
+Input
+nums1 =
+[1,2,2,1]
+nums2 =
+[2,2]
+Output
+[2]
+Expected
+[2]
