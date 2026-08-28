@@ -1,0 +1,52 @@
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* shortestToChar(char* s, char c, int* returnSize) {
+    int n = strlen(s);
+    *returnSize = n;
+    
+    // Allocate memory for the answer array
+    int* answer = (int*)malloc(n * sizeof(int));
+    if (answer == NULL) return NULL;
+
+    // A large initial distance value representing "infinity"
+    int last_pos = -100000; 
+
+    // First pass: Left-to-right
+    for (int i = 0; i < n; i++) {
+        if (s[i] == c) {
+            last_pos = i;
+        }
+        answer[i] = i - last_pos;
+    }
+
+    // Reset last_pos for the reverse direction
+    last_pos = 100000; 
+
+    // Second pass: Right-to-left
+    for (int i = n - 1; i >= 0; i--) {
+        if (s[i] == c) {
+            last_pos = i;
+        }
+        // Update to the minimum distance found
+        int current_dist = last_pos - i;
+        if (current_dist < answer[i]) {
+            answer[i] = current_dist;
+        }
+    }
+
+    return answer;
+}
+Input
+s =
+"loveleetcode"
+c =
+"e"
+Output
+[3,2,1,0,1,0,0,1,2,2,1,0]
+Expected
+[3,2,1,0,1,0,0,1,2,2,1,0]
