@@ -1,0 +1,35 @@
+#include <string.h>
+
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
+int countBinarySubstrings(char* s) {
+    int total_substrings = 0;
+    int prev_group_len = 0;
+    int curr_group_len = 1;
+    
+    // Loop through the string starting from the second character
+    for (int i = 1; s[i] != '\0'; i++) {
+        if (s[i] == s[i - 1]) {
+            // Characters match, increment the current group size
+            curr_group_len++;
+        } else {
+            // Characters changed, add valid combinations formed by last two groups
+            total_substrings += MIN(prev_group_len, curr_group_len);
+            // Move current group to previous, reset current group to 1
+            prev_group_len = curr_group_len;
+            curr_group_len = 1;
+        }
+    }
+    
+    // Add the valid combinations from the very last group transition
+    total_substrings += MIN(prev_group_len, curr_group_len);
+    
+    return total_substrings;
+}
+Input
+s =
+"00110011"
+Output
+6
+Expected
+6
