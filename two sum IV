@@ -1,0 +1,51 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+// Helper function to perform in-order traversal and store values in an array
+void inorder(struct TreeNode* root, int* arr, int* size) {
+    if (root == NULL) return;
+    
+    inorder(root->left, arr, size);
+    arr[(*size)++] = root->val;
+    inorder(root->right, arr, size);
+}
+
+bool findTarget(struct TreeNode* root, int k) {
+    int arr[10001]; // Max nodes constraint for this problem is 10^4
+    int size = 0;
+    
+    // Step 1: Flatten BST into a sorted array
+    inorder(root, arr, &size);
+    
+    // Step 2: Use two pointers to find if two numbers add up to k
+    int left = 0;
+    int right = size - 1;
+    
+    while (left < right) {
+        int sum = arr[left] + arr[right];
+        if (sum == k) {
+            return true;
+        } else if (sum < k) {
+            left++; // Increase sum
+        } else {
+            right--; // Decrease sum
+        }
+    }
+    
+    return false;
+}
+Input
+root =
+[5,3,6,2,4,null,7]
+k =
+9
+Output
+true
+Expected
+true
