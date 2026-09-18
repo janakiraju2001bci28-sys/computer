@@ -1,0 +1,7 @@
+struct ListNode* removeNthFromEnd(struct ListNode* head, int n) {
+    struct ListNode **h = &head;
+    int c = 0;   
+    for (; *h ; c++, h = &(*h)->next);
+    for (h = &head ; *h && c - n ; c--, h = &(*h)->next);
+    return *h = *h ? (*h)->next : NULL, head; // Free removed node, if needed.
+}
