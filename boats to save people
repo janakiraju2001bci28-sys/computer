@@ -1,0 +1,28 @@
+#include <stdlib.h>
+
+// Comparison function for qsort
+int compare(const void* a, const void* b) {
+    return (*(int*)a - *(int*)b);
+}
+
+int numRescueBoats(int* people, int peopleSize, int limit) {
+    // 1. Sort the weights of people in ascending order
+    qsort(people, peopleSize, sizeof(int), compare);
+    
+    int boats = 0;
+    int left = 0;                  // Pointer to the lightest person
+    int right = peopleSize - 1;    // Pointer to the heaviest person
+    
+    // 2. Pair people using two pointers
+    while (left <= right) {
+        // If the lightest and heaviest can share a boat
+        if (people[left] + people[right] <= limit) {
+            left++;   // Lightest person gets on the boat
+        }
+        // Heaviest person always gets on a boat
+        right--; 
+        boats++;      // Increment boat count
+    }
+    
+    return boats;
+}
